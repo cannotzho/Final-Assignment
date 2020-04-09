@@ -33,8 +33,12 @@ class FightArea(BoxLayout):
         super().__init__(**kwargs)
         self.add_widget(playertwo)
         self.add_widget(playerone)
+        self.add_widget(playerone.weapon)
+        self.add_widget(playertwo.weapon)
         self.playerone = playerone
         self.playertwo = playertwo
+        self.weaponone = playerone.weapon
+        self.weapontwo = playertwo.weapon
         
         self._keyboard = Window.request_keyboard(self._on_keyboard_closed, self)
         self._keyboard.bind(on_key_down = self._on_key_down) #binding key press to callback function
@@ -49,8 +53,8 @@ class FightArea(BoxLayout):
         Clock.schedule_interval(partial(playerone.move_step, playertwo), 0)
         Clock.schedule_interval(partial(playertwo.move_step, playerone), 0)
         Clock.schedule_interval(partial(test, playerone, playertwo), 0)
-        Clock.schedule_interval(partial(playertwo.damage_check, playerone.weapon), 0)
-        
+        Clock.schedule_interval(partial(playertwo.damage_check, self.weaponone), 0)
+        Clock.schedule_interval(partial(playerone.damage_check, self.weapontwo), 0)
     
     def _on_keyboard_closed(self):
         self._keyboard.unbind(on_key_down = self._on_key_down)

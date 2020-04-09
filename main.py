@@ -19,7 +19,7 @@ import FightArea as FA
             
     
 
-playertwo = char.Character((300,0), list("ijklm"))
+playertwo = char.Character((300,0), list("ikljm"))
 playerone = char.Character()
 box = FA.FightArea(playerone, playertwo)
 
