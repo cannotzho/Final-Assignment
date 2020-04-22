@@ -62,7 +62,7 @@ class FightArea(Screen):
     def __init__(self, playerone, playertwo, **kwargs):
         super().__init__(**kwargs)
         with self.canvas:
-            self.background = Rectangle(source = 'background.png', pos = self.pos, size = (1000, 1000))
+            self.background = Rectangle(source = 'background.png', pos = self.pos, size = (800, 600))
         self.add_widget(playertwo)
         self.add_widget(playerone)
         
@@ -76,14 +76,12 @@ class FightArea(Screen):
         self._keyboard.bind(on_key_down = self._on_key_down) #binding key press to callback function
         self._keyboard.bind(on_key_up = self._on_key_up)
         
-        def test(b1, b2, dt, *largs):
-            if collides((b1.player.pos, b1.player.size), (b2.player.pos, b2.player.size)):
-                print("Colliding")
+        
             
         
         Clock.schedule_interval(partial(playerone.move_step, playertwo), 0)
         Clock.schedule_interval(partial(playertwo.move_step, playerone), 0)
-        Clock.schedule_interval(partial(test, playerone, playertwo), 0)
+
         Clock.schedule_interval(playerone.update_visuals, 0)
         Clock.schedule_interval(playertwo.update_visuals, 0)
 

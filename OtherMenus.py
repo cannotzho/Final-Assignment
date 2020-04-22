@@ -92,6 +92,11 @@ class Controls(Screen):
         lance_select1 = Button(text = "Lance \n Special: Guard")
         lance_select1.bind(on_press = self.choose_lance1)
         BL2P1.add_widget(lance_select1)
+        
+        hammer_select1 = Button(text = "Hammer \n Special: Smash")
+        hammer_select1.bind(on_press = self.choose_hammer1)
+        BL2P1.add_widget(hammer_select1)
+        
         GLP1.add_widget(BL2P1)
         
         GL.add_widget(GLP1)
@@ -119,6 +124,10 @@ class Controls(Screen):
         lance_select2 = Button(text = "Lance \n Special: Guard")
         lance_select2.bind(on_press = self.choose_lance2)
         BL2P2.add_widget(lance_select2)
+        
+        hammer_select2 = Button(text = "Hammer \n Special: Smash")
+        hammer_select2.bind(on_press = self.choose_hammer2)
+        BL2P2.add_widget(hammer_select2)
 
         
         GLP2.add_widget(BL2P2)
@@ -144,6 +153,10 @@ class Controls(Screen):
         self.weap1 = W.Lance
         self.confirm_button1.text = "Confirm Player 1 controls: {:10} \n Weapon choice: Lance".format(self.newtext1.text)
         
+    def choose_hammer1(self, *args):
+        self.weap1 = W.Hammer
+        self.confirm_button1.text = "Confirm Player 1 controls: {:10} \n Weapon choice: Hammer".format(self.newtext1.text)
+        
     def choose_sword2(self, *args):
         self.weap2 = W.Sword
         self.confirm_button2.text = "Confirm Player 1 controls: {:10} \n Weapon choice: Sword".format(self.newtext2.text)
@@ -152,6 +165,9 @@ class Controls(Screen):
         self.weap2 = W.Lance
         self.confirm_button2.text = "Confirm Player 1 controls: {:10} \n Weapon choice: Lance".format(self.newtext2.text)
         
+    def choose_hammer2(self, *args):
+        self.weap2 = W.Hammer
+        self.confirm_button2.text = "Confirm Player 1 controls: {:10} \n Weapon choice: Hammer".format(self.newtext2.text)
         
         
         
