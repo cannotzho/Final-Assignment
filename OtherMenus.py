@@ -50,17 +50,24 @@ class Controls(Screen):
         
         BL = BoxLayout()
         BL.orientation = "vertical"
+        
+        #Create Gridlayout for 2 columns for all character options
         GL = GridLayout()
         GL.cols = 2
         self.weap1 = W.Sword
         self.weap2 = W.Sword
-        
+        self.player1_choice = 1
+        self.player2_choice = 1
+        #Row 1 of widgets in Gridlayout, textline input to change control scheme (pretty bad right now, change later)
         self.newtext1 = TextInput(multiline = False)
+        self.newtext1.size_hint = (1, 0.2)
         GL.add_widget(self.newtext1)
         
         self.newtext2 = TextInput(multiline = False)
+        self.newtext2.size_hint = (1, 0.2)
         GL.add_widget(self.newtext2)
         
+        #Row 2 of widgets in Gridlayout, button to submit textinput to change controls. Again, needs an improvement
         self.confirm_button1 = Button(text = "Confirm Player 1 controls: wsdazxc(default)")
         self.confirm_button1.bind(on_press = self.change_controls1)
         GL.add_widget(self.confirm_button1)        
@@ -69,6 +76,32 @@ class Controls(Screen):
         self.confirm_button2.bind(on_press = self.change_controls2)
         GL.add_widget(self.confirm_button2)
         
+        #Row 3 of widgets in Gridlayout, includes character choices (purely cosmetic)
+        P1_characters = BoxLayout()
+        
+        self.character1_button1 = Button(background_normal = "knight 1.png")
+        self.character1_button1.bind(on_press = self.p1_change_char1)
+        P1_characters.add_widget(self.character1_button1)        
+                        
+        self.character1_button2 = Button(background_normal = "knight 2.png")
+        self.character1_button2.bind(on_press = self.p1_change_char2)
+        P1_characters.add_widget(self.character1_button2)
+        
+        GL.add_widget(P1_characters)
+        
+        P2_characters = BoxLayout()
+        
+        self.character2_button1 = Button(background_normal = "knight 1.png")
+        self.character2_button1.bind(on_press = self.p2_change_char1)
+        P2_characters.add_widget(self.character2_button1)        
+                        
+        self.character2_button2 = Button(background_normal = "knight 2.png")
+        self.character2_button2.bind(on_press = self.p2_change_char2)
+        P2_characters.add_widget(self.character2_button2)
+        
+        GL.add_widget(P2_characters)
+        
+        #Row 4 of widgets in GridLayout
         GLP1 = GridLayout()
         GLP1.cols = 2
         BLP1 = BoxLayout()
@@ -136,7 +169,7 @@ class Controls(Screen):
         
         BL.add_widget(GL)
         
-        
+        #Row 2 of Overall Boxlayout, for the play button
         
         self.play_button = Button(text = "Play", size_hint = (1, 0.2))
         self.play_button.bind(on_press = self.playgame)
@@ -198,15 +231,15 @@ class Controls(Screen):
             pass
         
         if len(self.newtext1.text) ==  0 and len(self.newtext2.text) == 0:
-            playerone = char.Character((100, 300), list("wsdaert"), self.weap1, name = "P1")
-            playertwo = char.Character((500, 300),list("ol;kp[]"), self.weap2, name = "P2")
+            playerone = char.Character((100, 300), list("wsdaert"), self.weap1, name = "P1", character_number = self.player1_choice)
+            playertwo = char.Character((500, 300),list("ol;kp[]"), self.weap2, name = "P2", character_number = self.player2_choice)
             self.newfight = FA.FightArea(playerone, playertwo, name = "game_area")
             self.parent.add_widget(self.newfight)
             self.manager.current = "game_area"
         if play_valid:
         
-            playerone = char.Character((100, 300), list(self.newtext1.text), self.weap1, name = "P1")
-            playertwo = char.Character((500, 300),list(self.newtext2.text), self.weap2, name = "P2")
+            playerone = char.Character((100, 300), list(self.newtext1.text), self.weap1, name = "P1", character_number = self.player1_choice)
+            playertwo = char.Character((500, 300),list(self.newtext2.text), self.weap2, name = "P2", character_number = self.player2_choice)
             self.newfight = FA.FightArea(playerone, playertwo, name = "game_area")
             self.parent.add_widget(self.newfight)
             #self.parent.add_widget(FA.FightArea(playerone, playertwo, name = "game_area"))
@@ -233,11 +266,23 @@ class Controls(Screen):
                 pass
         self.confirm_button2.text = "Confirm Player 2 controls: {:10}".format(self.newtext2.text)                
         
+    def p1_change_char1(self, *args):
+        self.player1_choice = 1
+        
+    def p1_change_char2(self, *args):
+        self.player1_choice = 2
+        
+    def p2_change_char1(self, *args):
+        self.player2_choice = 1
+        
+    def p2_change_char2(self, *args):
+        self.player2_choice = 2
+        
         
 class Credits(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.back_button = Button(text = "Nothing here yet, go back")
+        self.back_button = Button(text = "Art by Jovin Lim Jing Kai \n Hey Brudderrrrr")
         self.back_button.bind(on_press = self.go_back)
         self.add_widget(self.back_button)
         

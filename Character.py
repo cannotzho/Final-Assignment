@@ -19,7 +19,7 @@ from kivy.core.audio import SoundLoader
 
 class Character(Widget): #Create subclass for all character types  player, enemies etc
     
-    def __init__(self, startpos = (0,0), movekeys = list("wsdaczx"), weapon_choice = W.Sword, name = "player", **kwargs):
+    def __init__(self, startpos = (0,0), movekeys = list("wsdaczx"), weapon_choice = W.Sword, name = "player", character_number = 1, **kwargs):
         super().__init__(**kwargs)
         #initiate widget size and widget pos
         self.pos = startpos
@@ -43,6 +43,7 @@ class Character(Widget): #Create subclass for all character types  player, enemi
         self.hammer_charge = 0
         
         #effect variables
+        self.char_no = character_number
         self.blink_size = 0
         self.effect_opacity = (1, 1, 1, 1)
         self.shield_opacity = (1, 1, 1, 0)
@@ -62,7 +63,7 @@ class Character(Widget): #Create subclass for all character types  player, enemi
         #drawing instructions
         with self.canvas:
             self.player_color = Color(1, 1, 1, 1)
-            self.player = Rectangle(source = 'player.png', pos = startpos, size = (100, 100))
+            self.player = Rectangle(source = 'knight {:1}.png'.format(self.char_no), pos = startpos, size = (100, 100))
             self.health = Rectangle(source = 'lifebar.png', pos = (startpos[0], startpos[1]+150), size = (100, 20))
             self.stamina = Rectangle(source = 'staminabar.png', pos = (startpos[0], startpos[1]+130), size = (100, 20))
             
@@ -236,6 +237,7 @@ class Character(Widget): #Create subclass for all character types  player, enemi
         
         if self.istate:
             self.player_color.rgba = (1, 1, 1, 0.7)
+            
         else:
             self.player_color.rgba = (1, 1, 1, 1)
         
@@ -286,7 +288,7 @@ class Character(Widget): #Create subclass for all character types  player, enemi
     def damage_check(self, weap, dt, *largs):            
         damage_multiplier = 1
         if self.istate:
-            self.player.source = 'hurtplayer.png'
+            self.player.source = 'knight {:1} hurt.png'.format(self.char_no)
             
         elif self.vuln_state:
             self.player.source = 'vulnerableplayer.png'
@@ -301,12 +303,15 @@ class Character(Widget): #Create subclass for all character types  player, enemi
             FA.parried_animation(self)
             Clock.schedule_once(self.recover_vulnerable, 1.5)
         
-        elif self.parry_state:
+        elif self.parry_state:            
+            self.player.source = 'knight {:1} parry.png'.format(self.char_no)
             
-            self.player.source = 'parryingplayer.png'
+        elif self.game_over:
+            self.player.source = 'knight {:1} dead.png'.format(self.char_no)
+            
         else:
             
-            self.player.source = 'player.png'
+            self.player.source = 'knight {:1}.png'.format(self.char_no)
             
         
         
@@ -331,7 +336,7 @@ class Character(Widget): #Create subclass for all character types  player, enemi
                 weap_orient = (self.player.pos[0] + weap.parent.directiondict[weap.parent.orientation][0]*0.1, self.player.pos[1] + weap.parent.directiondict[weap.parent.orientation][1]*0.1)
                 
                 FA.knockback_animation(self.player, weap_orient)
-                self.player.source = 'hurtplayer.png'
+                self.player.source = 'knight {:1} hurt.png'.format(self.char_no)
                 self.istate = True
                 Clock.schedule_once(self.recoverdmg, 2)
 
