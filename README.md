@@ -1,8 +1,10 @@
 # Final Assignment
 What the game is about:
+
 The game is a 1v1, PVP fighting game inspired by the combat mechanics found in Dark Souls 3 and other FromSoft games, of which I am a huge fan. Obviously, I'm not at the level where I can replicate the game using Python and Kivy, so instead I decided to make the game based on a top down view to accomodate the 2D movement. My hope is that the game will offer a compelling combat experience which rewards skill and patience and punishes cheesy tactics, much like combat in Souls games.
 
 How to play:
+
 The goal of the game is to beat the other player and you win when you manage to drop the other player's health to zero, which is done by attacking them. 
 
 Players share the keyboard and besides the typical up, down, left and right movement keys, have an attack, roll, and special button.
@@ -14,9 +16,13 @@ Code organization:
 The game code has been split into four separate files to make editing easier:
 
 HappySols.py - main game file which is used to run the game
+
 FightArea.py - Contains the screen class which contains information for the game being run, and also contains animation functions
+
 Character.py - Contains the character class and all methods related to the character widget
+
 Weapon.py - Contains the weapon classes and all methods related to the weapons
+
 OtherMenus.py - Contains information on the rest of the screens of the game, as well as functions for when menu buttons are pressed
 
 The rest of the game consists of sound and image files which are used in the game.
