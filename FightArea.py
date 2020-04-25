@@ -18,19 +18,6 @@ from kivy.uix.button import Button
 from kivy.uix.label import Label
 
 
-def collides(body1, body2):
-    r1x = body1[0][0]
-    r1y = body1[0][1]
-    r2x = body2[0][0]
-    r2y = body2[0][1]
-    r1w = body1[1][0]
-    r1h = body1[1][1]
-    r2w = body2[1][0]
-    r2h = body2[1][1]
-
-    if (r1x < r2x + r2w and r1x + r1w > r2x and r1y < r2y + r2h and r1y + r1h > r2y):
-        return True
-    return False
 
 def parried_animation(widget, *args):
     widget.blink_size = 0

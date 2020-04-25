@@ -21,7 +21,7 @@ class Sword(Widget):
         self.movecost = 0
         self.attack_sound = SoundLoader.load("weapon_swing.wav")
         self.attack_sound.seek(0)
-        
+        self.weapon_speed = 0.9
         
         with self.canvas:
             Color(1, 1, 1, 1)
@@ -37,6 +37,7 @@ class Sword(Widget):
         self.size = Sword.orientationdict[orientation][0]
         self.hitbox.pos = spawnpos
         self.hitbox.size = Sword.orientationdict[orientation][0]
+        self.hitbox.source = "sword{:1}.png".format(orientation)
         pass
     def move(self, orientation, dt, *largs):
         self.attack_sound.play()
@@ -78,7 +79,7 @@ class Lance(Widget):
         self.orientation = orientation
         self.movecost = 0
         self.attack_sound = SoundLoader.load("weapon_swing.wav")
-        
+        self.weapon_speed = 1.2
         
         with self.canvas:
             Color(1, 1, 1, 1)
@@ -94,6 +95,7 @@ class Lance(Widget):
         self.size = Lance.orientationdict[orientation][0]
         self.hitbox.pos = spawnpos
         self.hitbox.size = Lance.orientationdict[orientation][0]
+        self.hitbox.source = "lance{:1}.png".format(orientation)
         pass
     def move(self, orientation, dt, *largs):
         self.attack_sound.play()
@@ -130,9 +132,10 @@ class Hammer(Widget):
         super().__init__(**kwargs)
         self.size = (0, 0)
         self.pos = startpos
-        self.damage = 20
+        self.damage = 40
         self.orientation = orientation
         self.movecost = 0
+        self.weapon_speed = 1.5
         self.attack_sound = SoundLoader.load("weapon_swing.wav")
         
         
@@ -150,10 +153,11 @@ class Hammer(Widget):
         
         self.hitbox.pos = spawnpos
         
+        
         pass
     def move(self, orientation, dt, *largs):
         self.attack_sound.play()
-        self.movecost = 30
+        self.movecost = 40
         curx, cury = self.hitbox.pos 
         coords = [curx, cury]
         curxsize, curysize = self.size

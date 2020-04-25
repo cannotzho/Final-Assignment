@@ -23,6 +23,8 @@ class MainMenu(Screen):
         super().__init__(**kwargs)
         BL = BoxLayout()
         BL.orientation = "vertical"
+        BL.size_hint = (0.4, 0.4)
+        BL.pos = (200, 200)
         play_button = Button(text = "Play")
         play_button.bind(on_press = self.playgame)
         settings_button = Button(text = "Credits")
@@ -68,11 +70,11 @@ class Controls(Screen):
         GL.add_widget(self.newtext2)
         
         #Row 2 of widgets in Gridlayout, button to submit textinput to change controls. Again, needs an improvement
-        self.confirm_button1 = Button(text = "Confirm Player 1 controls: wsdazxc(default)")
+        self.confirm_button1 = Button(text = "Confirm Player 1 controls: wsdaert(default)")
         self.confirm_button1.bind(on_press = self.change_controls1)
         GL.add_widget(self.confirm_button1)        
                         
-        self.confirm_button2 = Button(text = "Confirm Player 2 controls: ikljm,.(default)")
+        self.confirm_button2 = Button(text = "Confirm Player 2 controls: ol;kp[](default)")
         self.confirm_button2.bind(on_press = self.change_controls2)
         GL.add_widget(self.confirm_button2)
         
@@ -126,7 +128,7 @@ class Controls(Screen):
         lance_select1.bind(on_press = self.choose_lance1)
         BL2P1.add_widget(lance_select1)
         
-        hammer_select1 = Button(text = "Hammer \n Special: Smash")
+        hammer_select1 = Button(text = "Great Hammer \n Special: Smash")
         hammer_select1.bind(on_press = self.choose_hammer1)
         BL2P1.add_widget(hammer_select1)
         
@@ -158,7 +160,7 @@ class Controls(Screen):
         lance_select2.bind(on_press = self.choose_lance2)
         BL2P2.add_widget(lance_select2)
         
-        hammer_select2 = Button(text = "Hammer \n Special: Smash")
+        hammer_select2 = Button(text = "Great Hammer \n Special: Smash")
         hammer_select2.bind(on_press = self.choose_hammer2)
         BL2P2.add_widget(hammer_select2)
 

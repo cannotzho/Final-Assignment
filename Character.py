@@ -23,7 +23,7 @@ class Character(Widget): #Create subclass for all character types  player, enemi
         super().__init__(**kwargs)
         #initiate widget size and widget pos
         self.pos = startpos
-        self.size_hint = (0.5/4, 0.5/3) #weird size_hint being used because ScreenManager is stupid relative layout
+        self.size_hint = (0.5/4, 0.5/3) #weird size_hint being used because ScreenManager is a stupid relative layout
         
         self.game_over = False
         self.movekeys = movekeys
@@ -134,12 +134,7 @@ class Character(Widget): #Create subclass for all character types  player, enemi
             self.stamina.pos = (newx, newy+130)
         #updating position of player model
         
-        if self.collide_widget(b2) or not self.atkoffcd:    
-            
-            self.pos = (currentx, currenty)
-            self.player.pos = (currentx, currenty)
-            self.health.pos = (currentx, currenty+150)
-            self.stamina.pos = (currentx, currenty+130)
+        
             
         #attack functionality    
         if self.movekeys[4] in FA.FightArea.keysPressed:
@@ -154,7 +149,7 @@ class Character(Widget): #Create subclass for all character types  player, enemi
                 self.weapon.weapspawn(((self.player.pos[0] + self.weapondirectiondict[self.orientation][0]), (self.player.pos[1]+ self.weapondirectiondict[self.orientation][1])), self.orientation)
                 Clock.schedule_interval(partial(self.weapon.move, self.orientation), 0)
                 self.atkoffcd = False
-                Clock.schedule_once(self.attackcooldown, 0.5)
+                Clock.schedule_once(self.attackcooldown, self.weapon.weapon_speed)
                 
             else:
                 self.stamina.size = self.stamina.size
@@ -187,7 +182,8 @@ class Character(Widget): #Create subclass for all character types  player, enemi
                     if not was_guarding:
                         self.guarding_sound.play()
                         FA.guard_animation(self, self.left_shield, self.right_shield, self.player.pos)
-                        
+           
+            #Great hammers have a ground smash special            
             if self.weapon.weaptype == "hammer" and not self.parry_state and not self.vuln_state:
                 
                 self.weapon.weapon_color.rgba = (1, 1, 1, 0.5)
@@ -210,6 +206,14 @@ class Character(Widget): #Create subclass for all character types  player, enemi
         if self.stamavail < 100 and not self.guard_state and self.hammer_charge == 0:        
             self.stamavail += 10 * dt
         self.stamina.size = (self.stamavail, self.stamina.size[1])
+        
+        #Ensures that player sprites don't get stuck inside each other
+        if self.collide_widget(b2) or not self.atkoffcd:    
+            
+            self.pos = (currentx, currenty)
+            self.player.pos = (currentx, currenty)
+            self.health.pos = (currentx, currenty+150)
+            self.stamina.pos = (currentx, currenty+130)
            
         
             
@@ -357,9 +361,8 @@ class Character(Widget): #Create subclass for all character types  player, enemi
         
     def hammer_charge_reset(self, dt):
         self.hammer_charge = 0
-        self.weapon.size = (0, 0)
-        self.weapon.hitbox.size = (0, 0)
         
+        self.weapon.weapdespawn()
         self.vuln_state = False
         
 
