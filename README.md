@@ -5,11 +5,31 @@ The game is a 1v1, PVP fighting game inspired by the combat mechanics found in D
 
 How to play:
 
+To begin the game, run HappySols.py
+
 The goal of the game is to beat the other player and you win when you manage to drop the other player's health to zero, which is done by attacking them. 
 
 Players share the keyboard and besides the typical up, down, left and right movement keys, have an attack, roll, and special button.
 
 Before starting the game, players will be met with a character and weapon selection screen. While the character selection is purely cosmetic, the three weapon options will change gameplay dramatically as they have different specials, damage, attack speed and other attributes. Players can also change their controls by typing in a string of 7 characters in the order: up, down, right, left, attack, roll, special, then clicking on the confirm controls button.
+
+Attacking:
+
+Each weapon has a unique attack animation and range. Swords are the fastest weapon but do the least damage. Lances have good reach and higher damage but are also narrower and attack slower. Great hammers are the slowest weapon but hit the hardest and have a huge range.
+
+Rolling:
+
+All players are able to roll, giving them i-frames in the midst of it.
+
+Special:
+
+Each weapon has its own special move that changes playstyle dramatically:
+
+Swords - parry: For a brief period, parry any attack that hits you. Players who attack you will are temporarily stunned and you can attack them for extra damage.
+
+Lance - guard: Hold up your shield to halve all incoming damage. You move slower and cannot recover stamina while guarding.
+
+Great Hammer - smash: Charge up your strength and release it to smash the ground beneath you, dealing damage to anyone around you.
 
 Code organization:
 
