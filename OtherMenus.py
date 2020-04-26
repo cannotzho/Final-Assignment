@@ -245,16 +245,16 @@ class Controls(Screen):
         #Playing the game with default values
         if len(self.newtext1.text) ==  0 and len(self.newtext2.text) == 0:
             MainMenu.menu_sound.stop()
-            playerone = char.Character((Window.size[0]/2 - 150, 300), list("wsdaert"), self.weap1, name = "P1", character_number = self.player1_choice)
-            playertwo = char.Character((Window.size[0]/2 + 50, 300),list("ol;kp[]"), self.weap2, name = "P2", character_number = self.player2_choice)
+            playerone = char.Character((150, 300), list("wsdaert"), self.weap1, name = "P1", character_number = self.player1_choice)
+            playertwo = char.Character((Window.size[0] + 250, 300),list("ol;kp[]"), self.weap2, name = "P2", character_number = self.player2_choice)
             self.newfight = FA.FightArea(playerone, playertwo, name = "game_area")
             self.parent.add_widget(self.newfight)
             self.manager.current = "game_area"
         #If new controls were set
         if play_valid:
         
-            playerone = char.Character((Window.size[0]/2 - 150, 300), list(self.newtext1.text), self.weap1, name = "P1", character_number = self.player1_choice)
-            playertwo = char.Character((Window.size[0]/2 + 50, 300),list(self.newtext2.text), self.weap2, name = "P2", character_number = self.player2_choice)
+            playerone = char.Character((150, 300), list(self.newtext1.text), self.weap1, name = "P1", character_number = self.player1_choice)
+            playertwo = char.Character((Window.size[0] + 250, 300),list(self.newtext2.text), self.weap2, name = "P2", character_number = self.player2_choice)
             self.newfight = FA.FightArea(playerone, playertwo, name = "game_area")
             self.parent.add_widget(self.newfight)
             
