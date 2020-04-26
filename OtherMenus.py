@@ -11,33 +11,44 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
+from kivy.clock import Clock
 from kivy.properties import ObjectProperty
+from kivy.core.audio import SoundLoader
+from kivy.core.window import Window
 import FightArea as FA
 import Character as char
 import Weapon as W
 
 
 class MainMenu(Screen):
-    
+    menu_sound = SoundLoader.load("Menu_BGM.wav")
+    menu_sound.loop = True
+    menu_sound.seek(0)
+    menu_sound.play()
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        BL = BoxLayout()
-        BL.orientation = "vertical"
-        BL.size_hint = (0.4, 0.4)
-        BL.pos = (200, 200)
+        self.BL = BoxLayout()
+        self.BL.orientation = "vertical"
+        self.BL.size_hint = (0.4, 0.4)
+        self.BL.pos = (Window.size[0] * 0.3, 200)
         play_button = Button(text = "Play")
         play_button.bind(on_press = self.playgame)
         settings_button = Button(text = "Credits")
         settings_button.bind(on_press = self.go_to_credits)
         
         
-        BL.add_widget(play_button)
-        BL.add_widget(settings_button)
-        self.add_widget(BL)
+        self.BL.add_widget(play_button)
+        self.BL.add_widget(settings_button)
+        self.add_widget(self.BL)
+        Clock.schedule_interval(self.update_menu_visuals, 0)
+        
+        
     def playgame(self, *args):
         self.manager.current = "game_settings"
     def go_to_credits(self, *args):
         self.manager.current = "game_credits"
+    def update_menu_visuals(self, dt):
+        self.BL.pos = (Window.size[0] * 0.3, 200)
         
         
 class Controls(Screen):
@@ -108,7 +119,7 @@ class Controls(Screen):
         GLP1.cols = 2
         BLP1 = BoxLayout()
         BLP1.orientation = "vertical"
-        player1moves = "wsdazxc"
+        player1moves = "wsdaert"
         self.player1labels = []
         for i, j in enumerate(player1moves):
             newbutt = Label(text = "{:6}: {:1}".format(self.move_labels[i], j))
@@ -231,20 +242,22 @@ class Controls(Screen):
             self.parent.remove_widget(self.newfight)
         except:
             pass
-        
+        #Playing the game with default values
         if len(self.newtext1.text) ==  0 and len(self.newtext2.text) == 0:
-            playerone = char.Character((100, 300), list("wsdaert"), self.weap1, name = "P1", character_number = self.player1_choice)
-            playertwo = char.Character((500, 300),list("ol;kp[]"), self.weap2, name = "P2", character_number = self.player2_choice)
+            MainMenu.menu_sound.stop()
+            playerone = char.Character((Window.size[0]/2 - 150, 300), list("wsdaert"), self.weap1, name = "P1", character_number = self.player1_choice)
+            playertwo = char.Character((Window.size[0]/2 + 50, 300),list("ol;kp[]"), self.weap2, name = "P2", character_number = self.player2_choice)
             self.newfight = FA.FightArea(playerone, playertwo, name = "game_area")
             self.parent.add_widget(self.newfight)
             self.manager.current = "game_area"
+        #If new controls were set
         if play_valid:
         
-            playerone = char.Character((100, 300), list(self.newtext1.text), self.weap1, name = "P1", character_number = self.player1_choice)
-            playertwo = char.Character((500, 300),list(self.newtext2.text), self.weap2, name = "P2", character_number = self.player2_choice)
+            playerone = char.Character((Window.size[0]/2 - 150, 300), list(self.newtext1.text), self.weap1, name = "P1", character_number = self.player1_choice)
+            playertwo = char.Character((Window.size[0]/2 + 50, 300),list(self.newtext2.text), self.weap2, name = "P2", character_number = self.player2_choice)
             self.newfight = FA.FightArea(playerone, playertwo, name = "game_area")
             self.parent.add_widget(self.newfight)
-            #self.parent.add_widget(FA.FightArea(playerone, playertwo, name = "game_area"))
+            
             self.manager.current = "game_area"
         
             
@@ -284,7 +297,7 @@ class Controls(Screen):
 class Credits(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.back_button = Button(text = "Art by Jovin Lim Jing Kai \n Hey Brudderrrrr")
+        self.back_button = Button(text = "Art by Jovin Lim Jing Kai \n Hey Brudderrrrr \n Menu BGM: 8-bit Chiptune music The Dark Dungeon alternate version by Erang \n Battle BGM: [8-Bit] Ensiferum - In My Sword I Trust")
         self.back_button.bind(on_press = self.go_back)
         self.add_widget(self.back_button)
         

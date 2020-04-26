@@ -13,7 +13,7 @@ import Weapon as W
 from kivy.clock import Clock
 from functools import partial
 from kivy.core.audio import SoundLoader
-
+from kivy.core.window import Window
 
 
 
@@ -41,6 +41,7 @@ class Character(Widget): #Create subclass for all character types  player, enemi
         self.vuln_state = False
         self.guard_state = False
         self.hammer_charge = 0
+        self.hit_counter = 0
         
         #effect variables
         self.char_no = character_number
@@ -59,6 +60,10 @@ class Character(Widget): #Create subclass for all character types  player, enemi
         self.block_sound.seek(0)
         self.guarding_sound = SoundLoader.load("ds_guarding.wav")
         self.guarding_sound.seek(0)
+        self.counter_sound = SoundLoader.load("custom_deflect.wav")
+        self.counter_sound.seek(0)
+        self.hammercrash_sound = SoundLoader.load("thunder_crash.wav")
+        self.hammercrash_sound.seek(0)
         
         #drawing instructions
         with self.canvas:
@@ -95,7 +100,7 @@ class Character(Widget): #Create subclass for all character types  player, enemi
         
     #movement function which also contains information for all different player controls.
     #This is so that the number of scheduled functions in the FightArea widget can be reduced    
-    def move_step(self, b2, dt, *largs):
+    def move_step(self, b2, w1, w2, w3, w4, dt, *largs):
         #First need to make sure the invisible character widget is the right size and updates even when the window changes in size
         self.size_hint = (100/self.parent.size[0], 100/self.parent.size[1])
         newx, newy = self.pos
@@ -132,10 +137,7 @@ class Character(Widget): #Create subclass for all character types  player, enemi
             self.player.pos = (newx, newy)
             self.health.pos = (newx, newy+150)
             self.stamina.pos = (newx, newy+130)
-        #updating position of player model
-        
-        
-            
+
         #attack functionality    
         if self.movekeys[4] in FA.FightArea.keysPressed:
             
@@ -164,12 +166,14 @@ class Character(Widget): #Create subclass for all character types  player, enemi
                 
                 self.stamavail -= 30
                 self.stamina.size = (self.stamavail, self.stamina.size[1])                         
-                Clock.schedule_interval(partial(self.roll, nextcoords, self.posilock, b2), 0)
+                Clock.schedule_interval(partial(self.roll, nextcoords, self.posilock, b2, w1, w2, w3, w4), 0)
                 
         #special functionality        
         if self.movekeys[6] in FA.FightArea.keysPressed:
             #swords have parry as a special move
             if self.weapon.weaptype == "sword" and not self.parry_state and not self.vuln_state and self.stamavail >= 50:
+                FA.parried_animation(self)
+                self.counter_sound.play()
                 self.stamavail -= 50
                 self.parry_state = True                    
                 
@@ -187,6 +191,7 @@ class Character(Widget): #Create subclass for all character types  player, enemi
             if self.weapon.weaptype == "hammer" and not self.parry_state and not self.vuln_state:
                 
                 self.weapon.weapon_color.rgba = (1, 1, 1, 0.5)
+                self.weapon.hitbox.source = "crash_zone.png"
                 if self.stamavail >= 0.56:
                     self.stamavail -= 0.56
                     self.hammer_charge += 100 * dt
@@ -197,6 +202,10 @@ class Character(Widget): #Create subclass for all character types  player, enemi
         
         #This block is specially set aside to reset hammer charge special
         if self.movekeys[6] not in FA.FightArea.keysPressed and self.hammer_charge != 0:
+            
+            if self.hammercrash_sound.state == "stop":
+                self.hammercrash_sound.play()
+            self.weapon.hitbox.source = "hammersmash2.png"
             self.weapon.weapon_color.rgba = (1, 1, 1, 1)
             self.weapon.size = (self.hammer_charge, self.hammer_charge)
             self.vuln_state = True
@@ -208,7 +217,7 @@ class Character(Widget): #Create subclass for all character types  player, enemi
         self.stamina.size = (self.stamavail, self.stamina.size[1])
         
         #Ensures that player sprites don't get stuck inside each other
-        if self.collide_widget(b2) or not self.atkoffcd:    
+        if self.collide_widget(b2) or not self.atkoffcd or self.collide_widget(w1) or self.collide_widget(w2) or self.collide_widget(w3) or self.collide_widget(w4):    
             
             self.pos = (currentx, currenty)
             self.player.pos = (currentx, currenty)
@@ -219,9 +228,17 @@ class Character(Widget): #Create subclass for all character types  player, enemi
             
     #function to update all visual changes        
     def update_visuals(self, dt):
-        #update background to be relative to window size
+        #update background and border walls to be relative to window size
         self.parent.background.size = self.parent.size
-        
+        self.parent.w1.size = Window.size
+        self.parent.w1.pos = (0 - Window.size[0], 0)
+        self.parent.w2.size = Window.size
+        self.parent.w2.pos = (Window.size[0], 0)
+        self.parent.w3.size = Window.size
+        self.parent.w3.pos = (0, 0 - Window.size[1])
+        self.parent.w4.size = Window.size
+        self.parent.w4.pos = (0, Window.size[1])        
+        #update the visuals mainly for guarding and getting parried
         self.effects.size = self.blink_size, self.blink_size
         self.effects.pos = (self.player.pos[0]+50-self.effects.size[0]/2, self.player.pos[1]+50-self.effects.size[1]/2)
         
@@ -263,12 +280,12 @@ class Character(Widget): #Create subclass for all character types  player, enemi
     def recoverroll(self, dt):
         self.rollstate = False
         
-    def roll(self, newcoords, originalcoords, b2, dt):
+    def roll(self, newcoords, originalcoords, b2, w1, w2, w3, w4, dt):
         if (abs(newcoords[0] - originalcoords[0]) > 300) or (abs(newcoords[1] - originalcoords[1]) > 300):
             self.rollstate = False
             return False
         
-        elif self.collide_widget(b2):
+        elif self.collide_widget(b2) or self.collide_widget(w1) or self.collide_widget(w2) or self.collide_widget(w3) or self.collide_widget(w4):
             Clock.schedule_once(self.recoverroll, 1)
             newcoords[0] -= self.directiondict[self.orientation][0] * dt
             newcoords[1] -= self.directiondict[self.orientation][1] * dt
@@ -289,13 +306,15 @@ class Character(Widget): #Create subclass for all character types  player, enemi
         self.stamina.pos = (newcoords[0], newcoords[1]+130)
         
         
+    #Function calculates damage and updates health accordingly, as well as other damage related information
+    #Also updates the sprite of the character to reflect damage state    
     def damage_check(self, weap, dt, *largs):            
         damage_multiplier = 1
         if self.istate:
             self.player.source = 'knight {:1} hurt.png'.format(self.char_no)
             
         elif self.vuln_state:
-            self.player.source = 'vulnerableplayer.png'
+            self.player.source = 'knight {:1} stunned.png'.format(self.char_no)
             
         elif self.weapon.recoil:
             self.parry_sound.play()
@@ -321,8 +340,8 @@ class Character(Widget): #Create subclass for all character types  player, enemi
         
             
         if self.collide_widget(weap) and self.istate == False:
-            print(weap.pos, weap.size)
-            print(self.pos, self.size)
+            
+            
             if self.parry_state and not weap.parent.vuln_state:
                 weap.recoil = True
                 
@@ -341,8 +360,9 @@ class Character(Widget): #Create subclass for all character types  player, enemi
                 
                 FA.knockback_animation(self.player, weap_orient)
                 self.player.source = 'knight {:1} hurt.png'.format(self.char_no)
+                
                 self.istate = True
-                Clock.schedule_once(self.recoverdmg, 2)
+                Clock.schedule_once(self.recoverdmg, 0.8)
 
             
             
